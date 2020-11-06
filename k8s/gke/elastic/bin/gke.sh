@@ -8,9 +8,8 @@ region=asia-east1
 # zone=asia-east1-a
 project_id=google.com:bin-wus-learning-center
 default_pool=default-pool
-nodes_per_zone=3 # per zone
-# machine_type=n2-standard-4
-machine_type=n1-standard-4
+nodes_per_zone=5 # per zone
+machine_type=n2-standard-8
 
 __usage() {
     echo "Usage: ./bin/gke.sh {create|(delete,del,d)|scale|fix}"
@@ -25,6 +24,7 @@ __create() {
         --region "${region}" \
         --node-locations "${region}-a","${region}-b" \
         --no-enable-basic-auth \
+        --enable-dataplane-v2 \
         --release-channel "rapid" \
         --machine-type "$machine_type" \
         --image-type "COS" \
@@ -55,7 +55,7 @@ __create() {
     kubectl apply -f $pwd/conf/node-daemon.yml
 
     # Install ECK: deploy Elastic operator
-    # https://download.elastic.co/downloads/eck/1.1.0/all-in-one.yaml
+    # https://download.elastic.co/downloads/eck/1.2.1/all-in-one.yaml
     kubectl apply -f $pwd/conf/all-in-one.yaml
 
     # create storage class
